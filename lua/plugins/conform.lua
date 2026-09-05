@@ -1,33 +1,33 @@
 return {
-  "stevearc/conform.nvim",
+	"stevearc/conform.nvim",
 
-  config = function()
-    require("conform").setup({
-      formatters_by_ft = {
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
-        
-        html = { "prettier"},
-        css = { "prettier"},
-        scss = { "prettier"},
+	config = function()
+		require("conform").setup({
+			formatters_by_ft = {
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescriptreact = { "prettier" },
 
-        lua = { "stylua" },
-        python = { "black" },
-        c = { "clang_format" },
-        cpp = { "clang_format" },
-      },
+				html = { "prettier" },
+				css = { "prettier" },
+				scss = { "prettier" },
 
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_fallback = true,
-      },
-    })
+				lua = { "stylua" },
+				python = { "ruff_organize_imports", "ruff_format" },
+				c = { "clang_format" },
+				cpp = { "clang_format" },
+			},
 
-    -- optional manual keybind
-    vim.keymap.set("n", "<leader>f", function()
-      require("conform").format({ lsp_fallback = true })
-    end, { desc = "Format file" })
-  end,
+			format_on_save = {
+				timeout_ms = 500,
+				lsp_fallback = true,
+			},
+		})
+
+		-- optional manual keybind
+		vim.keymap.set("n", "<leader>f", function()
+			require("conform").format({ lsp_fallback = true })
+		end, { desc = "Format file" })
+	end,
 }
