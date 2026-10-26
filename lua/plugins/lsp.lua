@@ -2,14 +2,37 @@ return {
 	"neovim/nvim-lspconfig",
 	config = function()
 		vim.lsp.config("clangd", {})
-		vim.lsp.config("pyright", {})
+		-- Configure Pyright to look for a local virtual environment
+		vim.lsp.config("pyright", {
+			settings = {
+				python = {
+					analysis = {
+						autoSearchPaths = true,
+						useLibraryCodeForTypes = true,
+						diagnosticMode = "openFilesOnly",
+					},
+				},
+			},
+			before_init = function(_, config)
+				-- Automatically check for typical venv directories in the project root
+				local env_path = vim.fn.getcwd() .. "/.venv"
+				if vim.fn.executable(env_path .. "/bin/python") == 1 then
+					config.settings.python.pythonPath = env_path .. "/bin/python"
+				elseif vim.fn.executable(env_path .. "/Scripts/python.exe") == 1 then -- Windows fallback
+					config.settings.python.pythonPath = env_path .. "/Scripts/python.exe"
+				end
+			end,
+		})
 		vim.lsp.config("lua_ls", {})
 		vim.lsp.config("ts_ls", {})
 
 		vim.lsp.enable({ "clangd", "pyright", "lua_ls", "ts_ls" })
 
 		vim.diagnostic.config({
-			virtual_text = true,
+			virtual_text = false, -- Turn off the single-line inline text
+			virtual_lines = { -- Turn on multi-line text underneath the code
+				current_line = true, -- Only show it for the line your cursor is on (keeps code clean)
+			},
 			signs = true,
 			underline = true,
 			severity_sort = true,
